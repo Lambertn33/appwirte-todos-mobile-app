@@ -46,7 +46,7 @@ export default function Home() {
         </AppView>
 
         <AppView className="w-full pb-6">
-          <Link href="/" asChild>
+          <Link href="/(auth)/login" asChild>
             <AppButton className="bg-blue-600 px-8 py-4 rounded-full shadow-lg active:bg-blue-700">
               <AppText className="text-white text-lg font-semibold text-center">
                 Get Started
