@@ -37,6 +37,7 @@ export default function Register() {
               onChangeText={setName}
               autoCapitalize="words"
               autoComplete="name"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 
@@ -48,6 +49,7 @@ export default function Register() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 
@@ -59,6 +61,7 @@ export default function Register() {
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password-new"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 
@@ -70,6 +73,7 @@ export default function Register() {
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password-new"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState<{ email: string; password: string }>({ email: "", password: "" });  
 
   const handleSubmit = () => {
-    // Handle login logic here
-    console.log("Login:", { email, password });
+    console.log("Login:", userData);
   };
 
   return (
@@ -39,22 +39,24 @@ export default function Login() {
             <AppTextInput
               label="Email"
               placeholder="Enter your email"
-              value={email}
-              onChangeText={setEmail}
+              value={userData.email}
+              onChangeText={(text) => setUserData({ ...userData, email: text })}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 
             <AppTextInput
               label="Password"
               placeholder="Enter your password"
-              value={password}
-              onChangeText={setPassword}
+              value={userData.password}
+              onChangeText={(password) => setUserData({ ...userData, password })}
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password"
+              showSoftInputOnFocus={true}
               textInputClassName="w-full h-14 rounded-full border border-gray-300 px-4 py-2 bg-white"
             />
 
