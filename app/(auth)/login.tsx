@@ -1,15 +1,16 @@
 import { AppButton, AppText, AppTextInput, AppView } from "@/components/ui";
+import { useUser } from "@/hooks/useUser";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const { user} = useUser();
   const [userData, setUserData] = useState<{ email: string; password: string }>({ email: "", password: "" });  
 
   const handleSubmit = () => {
     console.log("Login:", userData);
+    console.log('user', user);
   };
 
   return (
