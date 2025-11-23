@@ -49,8 +49,11 @@ Before you begin, ensure you have:
    Create a `.env` file in the root directory with your Appwrite credentials:
 
    ```env
-   EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+   EXPO_PUBLIC_APPWRITE_ENDPOINT=your-appwrite-endpoint
    EXPO_PUBLIC_APPWRITE_PROJECT_ID=your-project-id
+   EXPO_PUBLIC_APPWRITE_PROJECT_NAME=your-project-name
+   EXPO_PUBLIC_APPWRITE_DATABASE=your-database-id
+   EXPO_PUBLIC_APPWRITE_COLLECTION=your-table-id
    ```
 
    > **Note**: Replace `your-project-id` with your actual Appwrite project ID.
@@ -79,34 +82,6 @@ Before you begin, ensure you have:
    - **Android Emulator**: Press `a` or run `npm run android`
    - **Web**: Press `w` or run `npm run web`
    - **Expo Go**: Scan the QR code with the Expo Go app on your device
-
-## Project Structure
-
-```
-todos-app/
-├── app/                    # Expo Router pages (file-based routing)
-│   ├── (auth)/            # Authentication routes
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   ├── (dashboard)/       # Protected dashboard routes
-│   │   ├── profile.tsx
-│   │   └── todos/
-│   │       ├── createTodo.tsx
-│   │       └── todosList.tsx
-│   ├── index.tsx          # Home page
-│   └── _layout.tsx        # Root layout
-├── components/            # Reusable components
-│   ├── auth/             # Authentication components
-│   ├── home/             # Home page components
-│   └── ui/               # UI components (Button, Text, Card, etc.)
-├── contexts/             # React contexts
-│   └── UserContext.tsx   # User authentication context
-├── hooks/                # Custom React hooks
-│   └── useUser.ts        # User context hook
-├── lib/                  # Utility libraries
-│   └── appwrite.ts       # Appwrite client configuration
-└── assets/               # Images and static assets
-```
 
 ## Key Features Explained
 
@@ -159,17 +134,3 @@ The app uses:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is private and proprietary.
-
-## Support
-
-For issues and questions:
-- Check the [Expo documentation](https://docs.expo.dev/)
-- Review [Appwrite documentation](https://appwrite.io/docs)
-- Open an issue in the repository
-
----
-
-Built with ❤️ using Expo and React Native
