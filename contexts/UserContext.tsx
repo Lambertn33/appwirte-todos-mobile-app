@@ -14,6 +14,7 @@ interface UserContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   authChecked: boolean;
+  isLoading: boolean;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -23,35 +24,44 @@ export const UserContext = createContext<UserContextType>({
   register: async () => {},
   logout: async () => {},
   authChecked: false,
+  isLoading: false,
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function login(email: string, password: string) {
+    setIsLoading(true);
     try {
       const trimmedEmail = email.trim();
       await account.createEmailPasswordSession(trimmedEmail, password);
       setUser(await account.get());
     } catch (error) {
       throw Error((error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   async function register(name: string, email: string, password: string) {
+    setIsLoading(true);
     try {
        await account.create(ID.unique(), email, password, name);
        await login(email, password);
        setUser({ name, email });
     } catch (error) {
+      setIsLoading(false);
       throw Error((error as Error).message);
     }
   };
 
   async function logout() {
+    setIsLoading(true);
     await account.deleteSession("current");
     setUser(null);
+    setIsLoading(false);
   };
 
   async function getInitialUser() {
@@ -60,7 +70,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user);
     } catch (error) {
       setUser(null);
-      throw Error((error as Error).message);
     } finally {
       setAuthChecked(true);
     }
@@ -71,7 +80,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, login, register, logout, authChecked }}>
+    <UserContext.Provider value={{ user, setUser, login, register, logout, authChecked, isLoading }}>
       {children}
     </UserContext.Provider>
   );

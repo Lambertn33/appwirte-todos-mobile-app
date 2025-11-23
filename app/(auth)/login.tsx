@@ -1,11 +1,12 @@
 import { AppButton, AppText, AppTextInput, AppView } from "@/components/ui";
+import AppLoader from "@/components/ui/AppLoader";
 import { useUser } from "@/hooks/useUser";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
-  const { login } = useUser();
+  const { login, isLoading } = useUser();
   const [userData, setUserData] = useState<{ email: string; password: string }>({ email: "", password: "" });  
   const [error, setError] = useState<string | null>(null);
   
@@ -17,6 +18,14 @@ export default function Login() {
       setError((error as Error).message);
     }
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-blue-50" edges={["top", "bottom"]}>
+        <AppLoader />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50" edges={["top", "bottom"]}>
