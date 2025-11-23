@@ -53,6 +53,13 @@ export default function Home() {
               </AppText>
             </AppButton>
           </Link>
+          <Link href="/profile" asChild>
+            <AppButton className="bg-blue-600 px-8 py-4 rounded-full shadow-lg active:bg-blue-700">
+              <AppText className="text-white text-lg font-semibold text-center">
+                Profile
+              </AppText>
+            </AppButton>
+          </Link>
         </AppView>
       </AppView>
     </SafeAreaView>

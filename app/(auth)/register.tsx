@@ -1,18 +1,24 @@
 import { AppButton, AppText, AppTextInput, AppView } from "@/components/ui";
+import { useUser } from "@/hooks/useUser";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const { register } = useUser();
+  const [userData, setUserData] = useState<{ name: string; email: string; password: string; confirmPassword: string }>(
+    { name: "", email: "", password: "", confirmPassword: "" }
+  );
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
-    // Handle registration logic here
-    console.log("Register:", { name, email, password, confirmPassword });
+  const handleSubmit = async () => {
+    setError(null);
+    try {
+      await register(userData.name, userData.email, userData.password);
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
 
   return (
@@ -26,6 +32,10 @@ export default function Register() {
             Sign up to get started
           </AppText>
 
+          {error && (
+            <AppText className="text-red-400 font-extrabold text-xl text-center mb-4">{error}</AppText>
+          )}
+
           <AppView 
             className="bg-white rounded-xl p-6 mb-6"
             style={styles.formContainer}
@@ -33,8 +43,8 @@ export default function Register() {
             <AppTextInput
               label="Full Name"
               placeholder="Enter your full name"
-              value={name}
-              onChangeText={setName}
+              value={userData.name}
+              onChangeText={(text) => setUserData({ ...userData, name: text })}
               autoCapitalize="words"
               autoComplete="name"
               showSoftInputOnFocus={true}
@@ -44,8 +54,8 @@ export default function Register() {
             <AppTextInput
               label="Email"
               placeholder="Enter your email"
-              value={email}
-              onChangeText={setEmail}
+              value={userData.email}
+              onChangeText={(text) => setUserData({ ...userData, email: text })}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
@@ -56,8 +66,8 @@ export default function Register() {
             <AppTextInput
               label="Password"
               placeholder="Enter your password"
-              value={password}
-              onChangeText={setPassword}
+              value={userData.password}
+              onChangeText={(text) => setUserData({ ...userData, password: text })}
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password-new"
@@ -68,8 +78,8 @@ export default function Register() {
             <AppTextInput
               label="Confirm Password"
               placeholder="Confirm your password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              value={userData.confirmPassword}
+              onChangeText={(text) => setUserData({ ...userData, confirmPassword: text })}
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password-new"

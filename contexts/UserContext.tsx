@@ -1,10 +1,10 @@
+import { account } from "@/lib/appwrite";
 import { createContext, useState } from "react";
+import { ID } from "react-native-appwrite";
 
 interface User {
-  id: string;
   name: string;
   email: string;
-  avatar: string;
 }
 
 interface UserContextType {
@@ -26,11 +26,30 @@ export const UserContext = createContext<UserContextType>({
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  async function login(email: string, password: string) {};
+  async function login(email: string, password: string) {
+    try {
+      const trimmedEmail = email.trim();
+      await account.createEmailPasswordSession(trimmedEmail, password);
+      setUser(await account.get());
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  };
 
-  async function register(name: string, email: string, password: string) {};
+  async function register(name: string, email: string, password: string) {
+    try {
+       await account.create(ID.unique(), email, password, name);
+       await login(email, password);
+       setUser({ name, email });
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  };
 
-  async function logout() {};
+  async function logout() {
+    await account.deleteSession("current");
+    setUser(null);
+  };
 
   return (
     <UserContext.Provider value={{ user, setUser, login, register, logout }}>

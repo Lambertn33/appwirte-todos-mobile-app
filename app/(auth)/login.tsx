@@ -5,12 +5,17 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
-  const { user} = useUser();
+  const { login } = useUser();
   const [userData, setUserData] = useState<{ email: string; password: string }>({ email: "", password: "" });  
-
-  const handleSubmit = () => {
-    console.log("Login:", userData);
-    console.log('user', user);
+  const [error, setError] = useState<string | null>(null);
+  
+  const handleSubmit = async () => {
+    setError(null);
+    try {
+      await login(userData.email, userData.password);
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
 
   return (
@@ -23,6 +28,10 @@ export default function Login() {
           <AppText className="text-lg text-gray-600 mb-8 text-center">
             Sign in to continue
           </AppText>
+
+          {error && (
+            <AppText className="text-red-400 font-extrabold text-xl text-center mb-4">{error}</AppText>
+          )}
 
           <AppView 
             className="bg-white rounded-xl p-6 mb-6"
