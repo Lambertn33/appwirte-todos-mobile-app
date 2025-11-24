@@ -7,14 +7,14 @@ const DashboardLayout = () => {
   return (
     <Authenticated>
         <Tabs>
+           <Tabs.Screen name="todos/todosList" options={{ title: "Todos List", tabBarIcon: ({ color }) => (
+              <MaterialIcons name="list" color={color} size={28} />
+           ) }} />
+            <Tabs.Screen name="todos/createTodo" options={{ title: "Create Todo", tabBarIcon: ({ color }) => (
+               <MaterialIcons name="add" color={color} size={28} />
+            ) }} />
              <Tabs.Screen name="profile" options={{ title: "Profile", tabBarIcon: ({ color }) => (
                 <MaterialIcons name="person" color={color} size={28} />
-             ) }} />
-             <Tabs.Screen name="todos/createTodo" options={{ title: "Create Todo", tabBarIcon: ({ color }) => (
-                <MaterialIcons name="add" color={color} size={28} />
-             ) }} />
-             <Tabs.Screen name="todos/todosList" options={{ title: "Todos List", tabBarIcon: ({ color }) => (
-                <MaterialIcons name="list" color={color} size={28} />
              ) }} />
         </Tabs>
     </Authenticated>

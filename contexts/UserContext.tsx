@@ -1,11 +1,5 @@
-import { account } from "@/lib/appwrite";
+import { AuthService, User } from "@/lib/auth";
 import { createContext, useEffect, useState } from "react";
-import { ID } from "react-native-appwrite";
-
-interface User {
-  name: string;
-  email: string;
-}
 
 interface UserContextType {
   user: User | null;
@@ -32,12 +26,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function login(email: string, password: string) {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const trimmedEmail = email.trim();
-      await account.createEmailPasswordSession(trimmedEmail, password);
-      setUser(await account.get());
+      const authenticatedUser = await AuthService.login(email, password);
+      setUser(authenticatedUser);
     } catch (error) {
       throw Error((error as Error).message);
     } finally {
@@ -45,35 +38,41 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  async function register(name: string, email: string, password: string) {
+  const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-       await account.create(ID.unique(), email, password, name);
-       await login(email, password);
-       setUser({ name, email });
+      const newUser = await AuthService.register(name, email, password);
+      setUser(newUser);
     } catch (error) {
-      setIsLoading(false);
       throw Error((error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  async function logout() {
+  const logout = async () => {
     setIsLoading(true);
-    await account.deleteSession("current");
-    setUser(null);
-    setIsLoading(false);
+    try {
+      await AuthService.logout();
+      setUser(null);
+    } catch (error) {
+      throw Error((error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  async function getInitialUser() {
+  const getInitialUser = async () => {
     try {
-      const user = await account.get();
-      setUser(user);
+      const currentUser = await AuthService.getCurrentUser();
+      console.log("currentUser", currentUser);
+      setUser(currentUser);
     } catch (error) {
       setUser(null);
     } finally {
       setAuthChecked(true);
     }
-  }
+  };
 
   useEffect(() => {
     getInitialUser();

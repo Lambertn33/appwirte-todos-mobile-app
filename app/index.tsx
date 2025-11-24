@@ -21,7 +21,7 @@ export default function Home() {
         icon: <MaterialIcons name="category" size={64} color="#3b82f6" />
     },
     {
-        title: "Progress tracking",
+        title: "Tracking Tasks",
         icon: <MaterialIcons name="bar-chart" size={64} color="#3b82f6" />
     },
     {
@@ -50,13 +50,6 @@ export default function Home() {
             <AppButton className="bg-blue-600 px-8 py-4 rounded-full shadow-lg active:bg-blue-700">
               <AppText className="text-white text-lg font-semibold text-center">
                 Get Started
-              </AppText>
-            </AppButton>
-          </Link>
-          <Link href="/profile" asChild>
-            <AppButton className="bg-blue-600 px-8 py-4 rounded-full shadow-lg active:bg-blue-700">
-              <AppText className="text-white text-lg font-semibold text-center">
-                Profile
               </AppText>
             </AppButton>
           </Link>
