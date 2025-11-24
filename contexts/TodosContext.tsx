@@ -21,6 +21,7 @@ interface TodosContextType {
     getAllTodos: () => Promise<Todo[]>;
     updateTodo: (todo: Todo) => Promise<void>;
     deleteTodo: (id: string) => Promise<void>;
+    isCreatingTodo: boolean;
 }
 
 
@@ -32,17 +33,26 @@ export const TodosContext = createContext<TodosContextType>({
     getAllTodos: async() => [],
     updateTodo: async(todo: Todo) => {},
     deleteTodo: async(id: string) => {},
+    isCreatingTodo: false,
 });
 
 export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     const [todos, setTodos] = useState<Todo[]>([]);
+    const [ isCreatingTodo, setIsCreatingTodo ] = useState(false);
     const { user } = useUser();
 
     const addTodo = async (todo: AddTodoProps): Promise<void> => {
         if (!user) {
             throw new Error("User must be authenticated to create todos");
         }
-        await TodosService.createTodo(user.id, todo.title, todo.description);
+        setIsCreatingTodo(true);
+        try {
+            await TodosService.createTodo(user.id, todo.title, todo.description);
+        } catch (error) {
+            throw new Error((error as Error).message);
+        } finally {
+            setIsCreatingTodo(false);
+        }
     };
 
     const getTodo = async (id: string): Promise<Todo | null> => {
@@ -64,7 +74,7 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <TodosContext.Provider value={{ todos, setTodos, addTodo, getTodo, getAllTodos, updateTodo, deleteTodo }}>
+        <TodosContext.Provider value={{ todos, setTodos, addTodo, getTodo, getAllTodos, updateTodo, deleteTodo, isCreatingTodo }}>
             {children}
         </TodosContext.Provider>
     );

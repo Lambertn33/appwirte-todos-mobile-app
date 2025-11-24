@@ -1,6 +1,8 @@
 import { AppButton, AppText, AppTextInput, AppView } from "@/components/ui";
+import AppLoader from "@/components/ui/AppLoader";
 import { useTodos } from "@/hooks/useTodos";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,11 +13,37 @@ const CreateTodo = () => {
     description: "",
   });
 
-  const { addTodo } = useTodos();
+  const [error, setError] = useState<string | null>(null);
+
+  const { addTodo, isCreatingTodo } = useTodos();
+  const router = useRouter();
 
   const handleSubmit = async() => {
-    await addTodo(todoData);
+    if (!todoData.title || !todoData.description) {
+      setError("Title and description are required!");
+      return;
+    }
+    try {
+      await addTodo(todoData);
+      setTodoData({ title: "", description: "" });
+      setError(null);
+      router.replace("/(dashboard)/todos/todosList");
+    } catch (error) {
+      setError((error as Error).message);
+    }
   };
+
+  if (isCreatingTodo) {
+    return (
+      <SafeAreaView className="flex-1 bg-blue-50" edges={["top", "bottom"]}>
+        <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+          <AppView className="flex-1 px-6 pt-8">
+            <AppLoader />
+          </AppView>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50" edges={["top", "bottom"]}>
@@ -33,6 +61,14 @@ const CreateTodo = () => {
               Add a new task to your list
             </AppText>
           </AppView>
+
+          {error && (
+            <AppView className="bg-red-100 rounded-xl p-4 mb-6">
+              <AppText className="text-red-900 font-semibold text-base mb-1">
+                {error}
+              </AppText>
+            </AppView>
+          )}
 
           {/* Form Card */}
           <AppView 
@@ -73,23 +109,6 @@ const CreateTodo = () => {
                 </AppText>
               </AppView>
             </AppButton>
-          </AppView>
-
-          {/* Info Section */}
-          <AppView className="bg-blue-100 rounded-xl p-4 mb-6">
-            <AppView className="flex-row items-start">
-              <MaterialIcons name="info" size={24} color="#3b82f6" />
-              <AppView className="flex-1 ml-3">
-                <AppText className="text-blue-900 font-semibold text-base mb-1">
-                  Tips for creating todos
-                </AppText>
-                <AppText className="text-blue-700 text-sm leading-5">
-                  • Keep titles short and clear{"\n"}
-                  • Add detailed descriptions for complex tasks{"\n"}
-                  • You can edit or delete todos later
-                </AppText>
-              </AppView>
-            </AppView>
           </AppView>
         </AppView>
       </ScrollView>
