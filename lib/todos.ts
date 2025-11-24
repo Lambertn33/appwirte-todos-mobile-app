@@ -1,15 +1,23 @@
-import { useUser } from "@/hooks/useUser";
-import { databases } from "@/lib/appwrite";
-import { ID } from "react-native-appwrite";
+import { databases } from "./appwrite";
 
+import { ID, Permission, Role } from "react-native-appwrite";
 
-const E_COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID!;
-const E_DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!;
-
+const E_COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION!;
+const E_DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE!;
 
 export class TodosService {
-    static async createTodo(title: string, description: string): Promise<void> {
-        const user = useUser();
-        await databases.createDocument(E_DATABASE_ID, E_COLLECTION_ID, ID.unique(), { title, description });
+    static async createTodo(userId: string, title: string, description: string): Promise<void> {        
+        await databases.createDocument(
+            E_DATABASE_ID, 
+            E_COLLECTION_ID,
+            ID.unique(), 
+            { title, description, user_id: userId },
+            [
+                Permission.read(Role.user(userId)),
+                Permission.write(Role.user(userId)),
+                Permission.delete(Role.user(userId)),
+                Permission.update(Role.user(userId)),
+            ]
+        );
     }
 }

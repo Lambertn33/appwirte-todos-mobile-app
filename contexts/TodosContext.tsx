@@ -1,3 +1,5 @@
+import { useUser } from "@/hooks/useUser";
+import { TodosService } from "@/lib/todos";
 import { createContext, useState } from "react";
 
 interface Todo {
@@ -6,10 +8,15 @@ interface Todo {
     description: string;
 }
 
+interface AddTodoProps {
+    title: string;
+    description: string;
+}
+
 interface TodosContextType {
     todos: Todo[];
     setTodos: (todos: Todo[]) => void;
-    addTodo: (todo: Todo) => Promise<void>;
+    addTodo: (todo: AddTodoProps) => Promise<void>;
     getTodo: (id: string) => Promise<Todo | null>;
     getAllTodos: () => Promise<Todo[]>;
     updateTodo: (todo: Todo) => Promise<void>;
@@ -20,7 +27,7 @@ interface TodosContextType {
 export const TodosContext = createContext<TodosContextType>({
     todos: [],
     setTodos: () => {},
-    addTodo: async(todo: Todo) => {},
+    addTodo: async(todo: AddTodoProps) => {},
     getTodo: async() => null,
     getAllTodos: async() => [],
     updateTodo: async(todo: Todo) => {},
@@ -29,9 +36,13 @@ export const TodosContext = createContext<TodosContextType>({
 
 export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     const [todos, setTodos] = useState<Todo[]>([]);
+    const { user } = useUser();
 
-    const addTodo = async (todo: Todo): Promise<void> => {
-        // TODO: Implement addTodo logic
+    const addTodo = async (todo: AddTodoProps): Promise<void> => {
+        if (!user) {
+            throw new Error("User must be authenticated to create todos");
+        }
+        await TodosService.createTodo(user.id, todo.title, todo.description);
     };
 
     const getTodo = async (id: string): Promise<Todo | null> => {
