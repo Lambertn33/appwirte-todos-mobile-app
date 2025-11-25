@@ -1,6 +1,6 @@
 import { databases } from "./appwrite";
 
-import { ID, Permission, Role } from "react-native-appwrite";
+import { ID, Permission, Query, Role } from "react-native-appwrite";
 
 const E_COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION!;
 const E_DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE!;
@@ -19,5 +19,14 @@ export class TodosService {
                 Permission.update(Role.user(userId)),
             ]
         );
+    }
+
+    static async getTodos(userId: string) {
+        const response = await databases.listDocuments(
+            E_DATABASE_ID,
+            E_COLLECTION_ID,
+            [Query.equal("user_id", userId)]
+        );
+        return response.documents;
     }
 }
