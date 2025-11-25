@@ -1,4 +1,5 @@
 import { useUser } from "@/hooks/useUser";
+import { client } from "@/lib/appwrite";
 import { TodosService } from "@/lib/todos";
 import { createContext, useEffect, useState } from "react";
 
@@ -93,12 +94,27 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
         // TODO: Implement deleteTodo logic
     };
 
-    useEffect(() => {   
+    useEffect(() => { 
+        let unsubscribe: any;
+        const channel = `${process.env.EXPO_PUBLIC_APPWRITE_DATABASE!}.${process.env.EXPO_PUBLIC_APPWRITE_COLLECTION!}`;
         if (user) {
             getAllTodos();
+            unsubscribe = client.subscribe(channel, (response) => {
+                const { events, payload } = response;
+
+                if (events[0].includes("create")) {
+                    setTodos([...todos, payload as Todo]);
+                } 
+            });
         } else {
             setTodos([]);
         }
+
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
     }, [user]);
 
     return (

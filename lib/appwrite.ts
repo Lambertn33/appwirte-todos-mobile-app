@@ -21,5 +21,5 @@ const account = new Account(client);
 const databases = new Databases(client);
 const avatars = new Avatars(client);
 
-export { account, avatars, databases };
+export { account, avatars, client, databases };
 
