@@ -29,4 +29,13 @@ export class TodosService {
         );
         return response.documents;
     }
+
+    static async getTodo(id: string) {
+        const response = await databases.getDocument(
+            E_DATABASE_ID,
+            E_COLLECTION_ID,
+            id
+        );
+        return response;
+    }
 }

@@ -25,7 +25,6 @@ interface TodosContextType {
     addTodo: (todo: AddTodoProps) => Promise<void>;
     getTodo: (id: string) => Promise<Todo | null>;
     getAllTodos: () => Promise<void>;
-    updateTodo: (todo: Todo) => Promise<void>;
     deleteTodo: (id: string) => Promise<void>;
     isCreatingTodo: boolean;
     isGettingTodos: boolean;
@@ -38,7 +37,6 @@ export const TodosContext = createContext<TodosContextType>({
     addTodo: async(todo: AddTodoProps) => {},
     getTodo: async() => null,
     getAllTodos: async() => {},
-    updateTodo: async(todo: Todo) => {},
     deleteTodo: async(id: string) => {},
     isCreatingTodo: false,
     isGettingTodos: false,
@@ -65,8 +63,15 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const getTodo = async (id: string): Promise<Todo | null> => {
-        // TODO: Implement getTodo logic
-        return null;
+       if (!user) {
+        throw new Error("User must be authenticated to get todos");
+       }
+       try {
+        const todo = await TodosService.getTodo(id);
+        return todo as unknown as Todo;
+       } catch (error) {
+        throw new Error((error as Error).message);
+       }
     };
 
     const getAllTodos = async (): Promise<void> => {
@@ -86,9 +91,6 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
        }
     };
 
-    const updateTodo = async (todo: Todo): Promise<void> => {
-        // TODO: Implement updateTodo logic
-    };
 
     const deleteTodo = async (id: string): Promise<void> => {
         // TODO: Implement deleteTodo logic
@@ -118,7 +120,7 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     }, [user]);
 
     return (
-        <TodosContext.Provider value={{ todos, setTodos, addTodo, getTodo, getAllTodos, updateTodo, deleteTodo, isCreatingTodo, isGettingTodos }}>
+        <TodosContext.Provider value={{ todos, setTodos, addTodo, getTodo, getAllTodos, deleteTodo, isCreatingTodo, isGettingTodos }}>
             {children}
         </TodosContext.Provider>
     );

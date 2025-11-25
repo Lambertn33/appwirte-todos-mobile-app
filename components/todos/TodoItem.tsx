@@ -1,6 +1,7 @@
 import { AppText } from "@/components/ui/AppText";
 import { AppView } from "@/components/ui/AppView";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Pressable } from "react-native";
 
 interface TodoItemProps {
@@ -22,8 +23,10 @@ const formatDate = (dateString: string) => {
 };
 
 export const TodoItem = ({ todo }: TodoItemProps) => {
+  const router = useRouter();
+  
   return (
-    <Pressable onPress={() => console.log("todo", todo)}>
+    <Pressable onPress={() => router.push(`/todos/${todo.$id}`)}>
        <AppView className="bg-white rounded-2xl p-4 shadow-md border border-blue-50">
         <AppView className="flex-row items-start justify-between mb-3">
           <AppView className="flex-row items-center">

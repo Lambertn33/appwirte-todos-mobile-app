@@ -16,6 +16,7 @@ const DashboardLayout = () => {
              <Tabs.Screen name="profile" options={{ title: "Profile", tabBarIcon: ({ color }) => (
                 <MaterialIcons name="person" color={color} size={28} />
              ) }} />
+             <Tabs.Screen name="todos/[id]" options={{ href: null }} />
         </Tabs>
     </Authenticated>
   )
